@@ -1,10 +1,5 @@
-pipeline {
-  agent {
-    docker {
-      image 'maven:3.8.4-openjdk-11'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-    }
-  }
+ipeline {
+  agent any  // Run pipeline on Jenkins node (EC2)
 
   environment {
     APP_DIR = 'spring-boot-app'
@@ -23,23 +18,30 @@ pipeline {
     }
 
     stage('Build and Test') {
+      agent {
+        docker {
+          image 'maven:3.8.4-openjdk-11'
+          args '--user root'
+        }
+      }
       steps {
-        sh """
-          cd $APP_DIR
-          rm -rf target || true
-          mvn clean package
-        """
+        sh "cd $APP_DIR && mvn clean package"
       }
     }
 
     stage('Static Code Analysis') {
+      agent {
+        docker {
+          image 'maven:3.8.4-openjdk-11'
+          args '--user root'
+        }
+      }
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh '''
-            echo "SonarQube token starts with: $(echo $SONAR_AUTH_TOKEN | cut -c1-5)********"
+          sh """
             cd $APP_DIR
             mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL
-          '''
+          """
         }
       }
     }
@@ -48,9 +50,8 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh """
-            cd $APP_DIR
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t $DOCKER_IMAGE .
+            docker build -t $DOCKER_IMAGE $APP_DIR
             docker push $DOCKER_IMAGE
           """
         }
@@ -61,8 +62,8 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
           sh """
-            git config user.email "abhishek.xyz@gmail.com"
-            git config user.name "Abhishek Veeramalla"
+            git config user.email "jenny951216@gmail.com@gmail.com"
+            git config user.name "JennyThomas"
             sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
             git add spring-boot-app-manifests/deployment.yml
             git commit -m "Update deployment image to version ${BUILD_NUMBER}"
