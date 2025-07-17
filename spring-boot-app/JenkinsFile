@@ -7,7 +7,7 @@ pipeline {
   }
 
   environment {
-    APP_DIR = 'java-maven-sonar-argocd-helm-k8s/spring-boot-app'
+    APP_DIR = 'spring-boot-app'
     SONAR_URL = "http://65.2.188.69:9000"
     GIT_REPO_NAME = "CI_CD_Argo_CD"
     GIT_USER_NAME = "jenny95-hub"
