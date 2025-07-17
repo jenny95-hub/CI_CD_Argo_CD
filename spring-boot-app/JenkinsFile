@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     APP_DIR = 'spring-boot-app'
-    SONAR_URL = "http://65.2.188.69:9000"
+    SONAR_URL = "http://43.205.255.68/:9000"
     GIT_REPO_NAME = "CI_CD_Argo_CD"
     GIT_USER_NAME = "jenny95-hub"
     DOCKER_IMAGE = "jenny16/ultimate-cicd:${BUILD_NUMBER}"
