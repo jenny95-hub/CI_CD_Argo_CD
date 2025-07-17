@@ -1,4 +1,4 @@
-ipeline {
+pipeline {
   agent any  // Run pipeline on Jenkins node (EC2)
 
   environment {
