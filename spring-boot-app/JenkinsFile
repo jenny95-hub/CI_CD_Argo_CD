@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3.8.4-openjdk-11'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-    }
-  }
+  agent any
 
   environment {
     APP_DIR = 'spring-boot-app'
@@ -18,24 +13,30 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/jenny95-hub/CI_CD_Argo_CD.git'
+        git branch: 'main', url: "https://github.com/${env.GIT_USER_NAME}/${env.GIT_REPO_NAME}.git"
       }
     }
 
     stage('Build and Test') {
       steps {
-        sh "cd $APP_DIR && mvn clean package"
+        sh """
+          cd "$APP_DIR"
+          mvn clean package
+        """
       }
     }
 
     stage('Static Code Analysis') {
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-      sh '''
-        echo "SonarQube token starts with: $(echo $SONAR_AUTH_TOKEN | cut -c1-5)********"
-        cd $APP_DIR
-        mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL
-      '''
+          sh '''
+            #!/bin/bash
+            echo "SonarQube token starts with: ${SONAR_AUTH_TOKEN:0:5}********"
+            cd "$APP_DIR"
+            mvn sonar:sonar \
+              -Dsonar.login=$SONAR_AUTH_TOKEN \
+              -Dsonar.host.url=$SONAR_URL
+          '''
         }
       }
     }
@@ -43,12 +44,13 @@ pipeline {
     stage('Build and Push Docker Image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh """
-            cd $APP_DIR
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t $DOCKER_IMAGE .
-            docker push $DOCKER_IMAGE
-          """
+          sh '''
+            #!/bin/bash
+            cd "$APP_DIR"
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            docker build -t "$DOCKER_IMAGE" .
+            docker push "$DOCKER_IMAGE"
+          '''
         }
       }
     }
@@ -56,14 +58,17 @@ pipeline {
     stage('Update Deployment File') {
       steps {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-          sh """
+          sh '''
+            #!/bin/bash
             git config user.email "abhishek.xyz@gmail.com"
             git config user.name "Abhishek Veeramalla"
+
             sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
+
             git add spring-boot-app-manifests/deployment.yml
             git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-          """
+            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+          '''
         }
       }
     }
