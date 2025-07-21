@@ -134,4 +134,4 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 The following diagram illustrates the complete CI/CD pipeline and deployment architecture used in this project:
 
-![Architecture](./Jenkins_pipeline.png)
+![Architecture](./Jenkins_pipeline.PNG)
