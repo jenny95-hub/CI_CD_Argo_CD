@@ -64,12 +64,12 @@ This project demonstrates a complete CI/CD pipeline for deploying a Spring Boot 
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 minikube start --driver=docker --cpus=4 --memory=8192
-
-### 1. 🖥️ Install Docker
+```
+### 2. 🖥️ Install Docker
 
 ```bash
 sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
-
+```
