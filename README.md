@@ -67,6 +67,7 @@ sudo apt install openjdk-17-jre
 
 ### 2. 🖥️ Install Jenkins
 
+```bash
 curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
@@ -74,6 +75,7 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins
+```
 
 ### 3. 🖥️ Install Docker
 
@@ -112,7 +114,7 @@ chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 ```
 
-### 7. 🖥️ Install Argo CD
+### 8. 🖥️ Install Argo CD
 
 ```bash
 url -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -120,7 +122,7 @@ chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 ```
 
-### 7. 🖥️ Install Prometheus Stack with Helm
+### 9. 🖥️ Install Prometheus Stack with Helm
 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
