@@ -1,4 +1,3 @@
-# CI_CD_Argo_CD
 # 🚀 DevOps CI/CD Pipeline with Jenkins | Docker | SonarQube | Argo CD | Spring Boot | Prometheus | Grafana
 
 This project demonstrates a complete CI/CD pipeline for deploying a Spring Boot application using Jenkins, Docker, SonarQube, Argo CD, and Kubernetes (via Minikube on EC2). It also includes observability using Prometheus and Grafana.
@@ -130,3 +129,9 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack \
   -n monitoring --create-namespace
 ```
+
+## 🏗️ Project Architecture
+
+The following diagram illustrates the complete CI/CD pipeline and deployment architecture used in this project:
+
+![Architecture](./Jenkins_pipeline.png)
