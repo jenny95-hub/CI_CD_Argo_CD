@@ -56,8 +56,11 @@ This project demonstrates a complete CI/CD pipeline for deploying a Spring Boot 
 
 ---
 
-## 🚀 Setup Instructions
+## ⚙️ Setup Instructions
 
-### 1. **Start Minikube**
+### 1. 🖥️ Install Minikube
+
 ```bash
-minikube start --driver=none
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube start --driver=docker --cpus=4 --memory=8192
