@@ -58,18 +58,73 @@ This project demonstrates a complete CI/CD pipeline for deploying a Spring Boot 
 
 ## ⚙️ Setup Instructions
 
-### 1. 🖥️ Install Minikube
+### 1. 🖥️ Install Java
+
+```bash
+sudo apt update
+sudo apt install openjdk-17-jre
+```
+
+### 2. 🖥️ Install Jenkins
+
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins
+
+### 3. 🖥️ Install Docker
+
+```bash
+sudo apt update
+sudo apt install docker.io
+```
+
+### 4. 🖥️ Grant Jenkins user and Ubuntu user permission to docker deamon.
+
+```bash
+sudo su - 
+usermod -aG docker jenkins
+usermod -aG docker ubuntu
+systemctl restart docker
+```
+### 5. 🖥️ Install Sonarqube
+
+```bash
+docker run -d --name sonarqube -p 9000:9000 sonarqube
+```
+
+### 6. 🖥️ Install Minikube
 
 ```bash
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 minikube start --driver=docker --cpus=4 --memory=8192
 ```
-### 2. 🖥️ Install Docker
+
+### 7. 🖥️ Install kubectl
 
 ```bash
-sudo apt update
-sudo apt install -y docker.io
-sudo usermod -aG docker $USER
-newgrp docker
+url -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+
+### 7. 🖥️ Install Argo CD
+
+```bash
+url -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+
+### 7. 🖥️ Install Prometheus Stack with Helm
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  -n monitoring --create-namespace
 ```
